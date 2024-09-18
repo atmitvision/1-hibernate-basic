@@ -1,1 +1,1 @@
-# 1-hibernate-basic
+# REST API Demo App
