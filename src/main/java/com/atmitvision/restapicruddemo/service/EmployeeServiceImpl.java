@@ -1,37 +1,45 @@
 package com.atmitvision.restapicruddemo.service;
 
-import com.atmitvision.restapicruddemo.dao.EmployeeDao;
+import com.atmitvision.restapicruddemo.dao.EmployeeRepository;
 import com.atmitvision.restapicruddemo.entity.Employee;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
-    private EmployeeDao employeeDao;
+    private EmployeeRepository employeeRepository;
 
-    public EmployeeServiceImpl(EmployeeDao theEmployeeDao){
-        employeeDao=theEmployeeDao;
+    public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository){
+        employeeRepository=theEmployeeRepository;
     }
 
     @Override
     public List<Employee> findAdd() {
-        return employeeDao.getAll();
+        return employeeRepository.findAll();
     }
 
     @Override
     public Employee findById(int theId) {
-        return employeeDao.findById(theId);
-    }
-    @Transactional
-    @Override
-    public Employee save(Employee theEmplyee) {
-        return employeeDao.save(theEmplyee);
+        Optional<Employee> result = employeeRepository.findById(theId);
+        Employee theEmployee=null;
+        if(result.isPresent()){
+            theEmployee=result.get();
+        }else {
+            throw new RuntimeException("Did Not find the Employee ID ="+ theId);
+        }
+        return theEmployee;
     }
 
-    @Transactional
+    @Override
+    public Employee save(Employee theEmplyee) {
+        return employeeRepository.save(theEmplyee);
+    }
+
     @Override
     public void deleteById(int theId) {
-        employeeDao.deleteById(theId);
+        employeeRepository.deleteById(theId);
     }
 }
