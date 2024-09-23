@@ -1,38 +1,28 @@
 package com.atmitvision.restapicruddemo.security;
 
+import com.atmitvision.restapicruddemo.datasource.CustomDataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
+
 
 @Configuration
 public class BasicSecurityConfig {
+
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
-        UserDetails ashok= User.builder()
-                .username("Ashok")
-                .password("{noop}test1234")
-                .roles("EMPLOYEE")
-                .build();
-
-        UserDetails arthi= User.builder()
-                .username("Arthi")
-                .password("{noop}test1234")
-                .roles("EMPLOYEE","MANAGER")
-                .build();
-
-        UserDetails tumpa= User.builder()
-                .username("Tumpa")
-                .password("{noop}test1234")
-                .roles("EMPLOYEE","MANAGER","ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(ashok,arthi,tumpa);
+    public UserDetailsManager userDetailsManager(DataSource dataSource){
+        return new JdbcUserDetailsManager(dataSource);
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(configure->
