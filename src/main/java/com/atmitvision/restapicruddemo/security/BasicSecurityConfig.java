@@ -18,6 +18,12 @@ import javax.sql.DataSource;
 @Configuration
 public class BasicSecurityConfig {
 
+    private final DataSource dataSource;
+
+    public BasicSecurityConfig(DataSource customDataSource) {
+        dataSource = customDataSource;
+    }
+
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         return new JdbcUserDetailsManager(dataSource);
